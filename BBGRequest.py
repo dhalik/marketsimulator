@@ -14,7 +14,7 @@ class BBGRequest:
         self.command = './makeReq.sh \"' + self.ticker + ' US EQUITY\" '+ self.start.strftime("%Y%m%d") \
                        +' '+ self.end.strftime("%Y%m%d") +' > temp'
 
-    def getReq(self):
+    def run(self):
         subprocess.call(self.command,shell=True)
         f = open("temp", "r")
         jsonObject = json.load(f)
@@ -42,7 +42,7 @@ class BBGResponse:
 
 def main():
     #unitTest
-    print(BBGRequest("SPY", date(2014, 1, 1), date(2014, 1, 15)).getReq())
+    print(BBGRequest("SPY", date(2014, 1, 1), date(2014, 1, 2)).run())
 
 if (__name__ == "__main__"):
     main()
