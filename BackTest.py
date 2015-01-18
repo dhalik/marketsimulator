@@ -17,12 +17,12 @@ class BackTester:
 
     def run(self):
         for act in self.actions:
-            resp = BBGRequest.BBGRequest(act.ticker, act.date, act.date + timedelta(days=1)).run()
+            resp = BBGRequest.BBGRequest(act.ticker, act.date, act.date + timedelta(days=5)).run()
             if (len(resp) == 0):
-                raise Exception("No Data")
-
-            self.portfolio.addStock(act.date, act.execute(), resp[0].close * act.quantity)
-            print(str(act) + str(resp[0]))
+                return
+            self.portfolio.addStock(act.date, act.execute(), act.cost(resp[0]))
+            print(act)
+            print(self.portfolio)
         self.liquidate()
 
     def liquidate(self):
@@ -32,7 +32,6 @@ class BackTester:
                 raise Exception("No Data")
             pos = Portfolio.Position(sec.ticker, -sec.quantity)
             self.portfolio.addStock(self.endDate, pos, resp[0].close * pos.quantity)
-            print(str(pos) + str(resp[0]))
 
 
 
@@ -53,9 +52,22 @@ class Action:
             mult *= -1
         return Portfolio.Position(self.ticker, mult * self.quantity)
 
+    def cost(self, cost):
+        mult = 1
+        if (self.type == SELL):
+            mult *= -1
+        return mult * cost.close * self.quantity
+
 def main():
-    actList = [Action(BUY, "SPY", 100, date(2014, 1, 1)),
-               Action(BUY, "HYG", 100, date(2014, 1, 1))]
+    actList = [Action(BUY, "SPY", 100, date(2014, 1, 24)),
+               Action(SELL, "SPY", 100, date(2014, 2, 7)),
+               Action(BUY, "SPY", 100, date(2014, 2, 14)),
+               Action(SELL, "SPY", 100, date(2014, 2, 15)),
+               Action(BUY, "SPY", 100, date(2014, 3, 21)),
+               Action(SELL, "SPY", 100, date(2014, 3, 28)),
+               Action(BUY, "SPY", 100, date(2014, 9, 19)),
+               Action(SELL, "SPY", 100, date(2014, 10, 03))]
+
     test = BackTester(date(2014, 1, 1), date(2014, 12, 31), actList)
     test.run()
     print(test.portfolio)

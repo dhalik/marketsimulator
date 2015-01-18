@@ -12,10 +12,14 @@ class BBGRequest:
         self.start = start
         self.end = end
         self.type = type
-        self.command = './makeReq.sh \"' + self.ticker + self.type + '\" '+ self.start.strftime("%Y%m%d") \
+
+        self.script = './makeReq.sh'
+        if (self.type == " US EQUITY"):
+            self.script = './getEquity.sh'
+
+        self.command = self.script + ' \"' + self.ticker + self.type + '\" '+ self.start.strftime("%Y%m%d") \
                        +' '+ self.end.strftime("%Y%m%d") +' > temp'
         print(self.command)
-
     def run(self):
         subprocess.call(self.command,shell=True)
         f = open("temp", "r")
@@ -43,7 +47,7 @@ class BBGResponse:
 
 def main():
     #unitTest
-    for r in BBGRequest("M2", date(2014, 1, 1), date(2014, 12, 31), type=" Index").run():
+    for r in BBGRequest("SPY", date(2014, 1, 1), date(2014, 12, 31)).run():
         print(r.date.strftime("%Y-%m-%d ") + str(r.close))
 
 if (__name__ == "__main__"):

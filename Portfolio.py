@@ -13,8 +13,6 @@ class Portfolio:
 
     def updateCash(self, trans):
         self.cash += trans
-        print(str(trans))
-        print(str(self.cash))
         if (math.fabs(self.cash) > math.fabs(self.maxCapital)):
             self.maxCapital = math.fabs(self.cash)
 
@@ -23,12 +21,11 @@ class Portfolio:
             self.stocks[pos.ticker] = self.stocks[pos.ticker].combine(pos)
         else:
             self.stocks[pos.ticker] = pos
-
-        self.updateCash(cost * -1)
+        self.updateCash(cost)
         self.transactions += 1
 
-    def sellStock(self, date, pos):
-        self.addStock(date, Position(pos.ticker, -pos.quantity))
+    def sellStock(self, date, pos, cost):
+        self.addStock(date, Position(pos.ticker, -pos.quantity), cost)
 
     def __repr__(self):
         retVal = ""

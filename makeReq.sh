@@ -8,4 +8,3 @@ curl -q -X POST https://54.174.49.59/request/blp/refdata/HistoricalData \
   "endDate": "$3",
   "periodicitySelection": "DAILY"
 }
-EOF
