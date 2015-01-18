@@ -6,9 +6,6 @@ curl -q -X POST https://54.174.49.59/request/blp/refdata/HistoricalData \
   "fields": ["PX_LAST"],
   "startDate": "$2",
   "endDate": "$3",
-  "periodicitySelection": "DAILY",
-  "overrides": [{
-                "fieldID": "PX_LAST", 
-                "value":"1"}]
+  "periodicitySelection": "DAILY"
 }
 EOF
