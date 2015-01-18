@@ -21,8 +21,6 @@ class BackTester:
             if (len(resp) == 0):
                 return
             self.portfolio.addStock(act.date, act.execute(), act.cost(resp[0]))
-            print(act)
-            print(self.portfolio)
         self.liquidate()
 
     def liquidate(self):
@@ -59,7 +57,7 @@ class Action:
         return mult * cost.close * self.quantity
 
 def main():
-    actList = [Action(BUY, "SPY", 100, date(2014, 1, 24)),
+    actList = [Action(BUY, "SPY", 50, date(2014, 1, 24)),
                Action(SELL, "SPY", 100, date(2014, 2, 7)),
                Action(BUY, "SPY", 100, date(2014, 2, 14)),
                Action(SELL, "SPY", 100, date(2014, 2, 15)),

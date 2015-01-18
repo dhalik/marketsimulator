@@ -22,14 +22,14 @@ class TSPoint:
 class Model:
 
     def __init__(self):
-        self.start = date(2008, 1, 1)
+        self.start = date(2009, 1, 1)
         self.end = date(2014, 12, 31)
         self.decisionValue = 0.1
 
         self.featureList = [] #training features
         self.testList = [] #testing features
 
-        metrics = ["VIX", "CONCCONF","M2","INJCJC4","VIX", "TYX","NHCHATCH", "ECGDUS 14"] #TYX
+        metrics = ["CONCCONF","M2","INJCJC4","VIX","NHCHATCH", "ECGDUS 14","TYX"] #TYX
         self.spy = BBGRequest.BBGRequest("SPY", self.start, self.end).run()
 
         for inp in metrics:
@@ -118,9 +118,11 @@ class Model:
         actions = []
         self.prev = NO
         for x in self.testFeatureList:
-            pred = self.clf.predict(map(lambda x: x.close, x))[0]s
-            
-            action = BackTest.Action(pred,"SPY",1000,x[3].date)
+            pred = self.clf.predict(map(lambda x: x.close, x))[0]
+            if (len(actions) == 0):
+                action = BackTest.Action(pred,"SPY",500,x[3].date)
+            else:
+                action = BackTest.Action(pred,"SPY",1000,x[3].date)
             if (action.type != NO and self.prev != action.type):
                 actions.append(action)
                 self.prev = pred
@@ -132,7 +134,10 @@ class Model:
         print(bt.portfolio)
 
 def main():
-    Model().run()
+    m = Model()
+    #while (True):
+    m.learn()
+    m.run()
 
 if (__name__ == "__main__"):
     main()

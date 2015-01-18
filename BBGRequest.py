@@ -18,7 +18,7 @@ class BBGRequest:
             self.script = './getEquity.sh'
 
         self.command = self.script + ' \"' + self.ticker + self.type + '\" '+ self.start.strftime("%Y%m%d") \
-                       +' '+ self.end.strftime("%Y%m%d") +' > temp'
+                       +' '+ self.end.strftime("%Y%m%d") +' 2>/dev/null 1> temp'
         print(self.command)
     def run(self):
         subprocess.call(self.command,shell=True)
