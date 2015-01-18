@@ -7,12 +7,14 @@ from datetime import datetime, date
 
 class BBGRequest:
 
-    def __init__(self, ticker, start, end):
+    def __init__(self, ticker, start, end, type=" US EQUITY"):
         self.ticker = ticker
         self.start = start
         self.end = end
-        self.command = './makeReq.sh \"' + self.ticker + ' US EQUITY\" '+ self.start.strftime("%Y%m%d") \
+        self.type = type
+        self.command = './makeReq.sh \"' + self.ticker + self.type + '\" '+ self.start.strftime("%Y%m%d") \
                        +' '+ self.end.strftime("%Y%m%d") +' > temp'
+        print(self.command)
 
     def run(self):
         subprocess.call(self.command,shell=True)
@@ -22,27 +24,27 @@ class BBGRequest:
         retVal = []
         for a in pxArray:
             sampleTime = datetime.strptime(a['date'], "%Y-%m-%dT00:00:00.000Z")
-            retVal.append(BBGResponse(self.ticker, a['OPEN'], a['PX_LAST'], sampleTime))
+            retVal.append(BBGResponse(self.ticker, a['PX_LAST'], sampleTime))
         return retVal
 
 
 
 class BBGResponse:
 
-    def __init__(self, ticker, open, close, date):
+    def __init__(self, ticker, close, date):
         self.ticker = ticker
-        self.open = open
         self.close = close
         self.date = date
 
     def __repr__(self):
         return "BBGResponse[" + self.date.strftime("%Y-%m-%d") + ": " \
-               + self.ticker + ": Open=" + str(self.open) + ": Close=" + str(self.close) + "]"
+               + self.ticker + ": Close=" + str(self.close) + "]"
 
 
 def main():
     #unitTest
-    print(BBGRequest("SPY", date(2014, 1, 1), date(2014, 1, 2)).run())
+    for r in BBGRequest("M2", date(2014, 1, 1), date(2014, 12, 31), type=" Index").run():
+        print(r.date.strftime("%Y-%m-%d ") + str(r.close))
 
 if (__name__ == "__main__"):
     main()
